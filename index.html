@@ -14,7 +14,9 @@
 
         .info {
             position: absolute;
-            color: #030303;
+            padding: 10px 15px;
+            background: #fff;
+            border-radius: 5px;
             font-family: Arial, sans-serif;
             font-size: 14px;
             white-space: nowrap;
@@ -86,6 +88,7 @@
             return { vendor: 'N/A', renderer: 'N/A' };
         }
 
+        // Create all boxes
         const gpu = getGPU();
         
         items.push(new Box('IP Address: Loading...'));
@@ -106,6 +109,7 @@
         items.push(new Box('GPU Vendor: ' + gpu.vendor));
         items.push(new Box('GPU: ' + gpu.renderer));
 
+        // Fetch IP
         fetch('https://ipapi.co/json/')
             .then(r => r.json())
             .then(data => {
@@ -117,6 +121,7 @@
                 items[1].setText('Location: Error');
             });
 
+        // Update time every second
         setInterval(() => {
             items[2].setText('Time: ' + new Date().toLocaleString());
         }, 1000);
@@ -125,5 +130,3 @@
     </script>
 </body>
 </html>
-
-
