@@ -25,7 +25,7 @@
     <script>
         const items = [];
 
-        class Text {
+        class Box {
             constructor(text) {
                 this.div = document.createElement('div');
                 this.div.className = 'info';
@@ -86,26 +86,25 @@
             return { vendor: 'N/A', renderer: 'N/A' };
         }
 
-        // Create all text items
         const gpu = getGPU();
         
-        items.push(new Text('IP Address: Loading...'));
-        items.push(new Text('Location: Loading...'));
-        items.push(new Text('Time: ' + new Date().toLocaleString()));
-        items.push(new Text('Browser: ' + (navigator.userAgent.match(/(Firefox|Chrome|Safari|Edge)/)?.[0] || 'Unknown')));
-        items.push(new Text('Platform: ' + navigator.platform));
-        items.push(new Text('Version: ' + (navigator.userAgent.match(/(?:Chrome|Firefox|Safari|Edge)\/(\d+)/)?.[1] || 'Unknown')));
-        items.push(new Text('Mobile: ' + (/Mobile|Android|iPhone/i.test(navigator.userAgent) ? 'Yes' : 'No')));
-        items.push(new Text('Referrer: ' + (document.referrer || 'None')));
-        items.push(new Text('Languages: ' + navigator.languages.join(', ')));
-        items.push(new Text('Screen: ' + screen.width + 'x' + screen.height));
-        items.push(new Text('Window: ' + window.innerWidth + 'x' + window.innerHeight));
-        items.push(new Text('Color Depth: ' + screen.colorDepth));
-        items.push(new Text('Orientation: ' + (screen.orientation?.type || 'unknown')));
-        items.push(new Text('CPU Cores: ' + (navigator.hardwareConcurrency || 'Unknown')));
-        items.push(new Text('Memory: ' + (navigator.deviceMemory ? navigator.deviceMemory + 'GB' : 'Unknown')));
-        items.push(new Text('GPU Vendor: ' + gpu.vendor));
-        items.push(new Text('GPU: ' + gpu.renderer));
+        items.push(new Box('IP Address: Loading...'));
+        items.push(new Box('Location: Loading...'));
+        items.push(new Box('Time: ' + new Date().toLocaleString()));
+        items.push(new Box('Browser: ' + navigator.userAgent.match(/(Firefox|Chrome|Safari|Edge)/)?.[0] || 'Unknown'));
+        items.push(new Box('Platform: ' + navigator.platform));
+        items.push(new Box('Version: ' + navigator.userAgent.match(/(?:Chrome|Firefox|Safari|Edge)\/(\d+)/)?.[1] || 'Unknown'));
+        items.push(new Box('Mobile: ' + (/Mobile|Android|iPhone/i.test(navigator.userAgent) ? 'Yes' : 'No')));
+        items.push(new Box('Referrer: ' + (document.referrer || 'None')));
+        items.push(new Box('Languages: ' + navigator.languages.join(', ')));
+        items.push(new Box('Screen: ' + screen.width + 'x' + screen.height));
+        items.push(new Box('Window: ' + window.innerWidth + 'x' + window.innerHeight));
+        items.push(new Box('Color Depth: ' + screen.colorDepth));
+        items.push(new Box('Orientation: ' + (screen.orientation?.type || 'unknown')));
+        items.push(new Box('CPU Cores: ' + (navigator.hardwareConcurrency || 'Unknown')));
+        items.push(new Box('Memory: ' + (navigator.deviceMemory ? navigator.deviceMemory + 'GB' : 'Unknown')));
+        items.push(new Box('GPU Vendor: ' + gpu.vendor));
+        items.push(new Box('GPU: ' + gpu.renderer));
 
         fetch('https://ipapi.co/json/')
             .then(r => r.json())
@@ -126,4 +125,5 @@
     </script>
 </body>
 </html>
+
 
