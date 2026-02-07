@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bouncing Info</title>
+    <style>
+        body {
+            margin: 0;
+            background: url('cool.gif');
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        .info {
+            position: absolute;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        const items = [];
+
+        class Text {
+            constructor(text) {
+                this.div = document.createElement('div');
+                this.div.className = 'info';
+                this.div.textContent = text;
+                document.body.appendChild(this.div);
+                
+                this.x = Math.random() * (window.innerWidth - 300);
+                this.y = Math.random() * (window.innerHeight - 50);
+                this.dx = (Math.random() - 0.5) * 4;
+                this.dy = (Math.random() - 0.5) * 4;
+                
+                this.update();
+            }
+
+            move() {
+                const rect = this.div.getBoundingClientRect();
+                
+                this.x += this.dx;
+                this.y += this.dy;
+
+                if (this.x <= 0 || this.x + rect.width >= window.innerWidth) {
+                    this.dx = -this.dx;
+                }
+                if (this.y <= 0 || this.y + rect.height >= window.innerHeight) {
+                    this.dy = -this.dy;
+                }
+
+                this.update();
+            }
+
+            update() {
+                this.div.style.left = this.x + 'px';
+                this.div.style.top = this.y + 'px';
+            }
+
+            setText(text) {
+                this.div.textContent = text;
+            }
+        }
+
+        function animate() {
+            items.forEach(item => item.move());
+            requestAnimationFrame(animate);
+        }
+
+        function getGPU() {
+            const canvas = document.createElement('canvas');
+            const gl = canvas.getContext('webgl');
+            if (gl) {
+                const ext = gl.getExtension('WEBGL_debug_renderer_info');
+                if (ext) {
+                    return {
+                        vendor: gl.getParameter(ext.UNMASKED_VENDOR_WEBGL),
+                        renderer: gl.getParameter(ext.UNMASKED_RENDERER_WEBGL)
+                    };
+                }
+            }
+            return { vendor: 'N/A', renderer: 'N/A' };
+        }
+
+        // Create all text items
+        const gpu = getGPU();
+        
+        items.push(new Text('IP Address: Loading...'));
+        items.push(new Text('Location: Loading...'));
+        items.push(new Text('Time: ' + new Date().toLocaleString()));
+        items.push(new Text('Browser: ' + (navigator.userAgent.match(/(Firefox|Chrome|Safari|Edge)/)?.[0] || 'Unknown')));
+        items.push(new Text('Platform: ' + navigator.platform));
+        items.push(new Text('Version: ' + (navigator.userAgent.match(/(?:Chrome|Firefox|Safari|Edge)\/(\d+)/)?.[1] || 'Unknown')));
+        items.push(new Text('Mobile: ' + (/Mobile|Android|iPhone/i.test(navigator.userAgent) ? 'Yes' : 'No')));
+        items.push(new Text('Referrer: ' + (document.referrer || 'None')));
+        items.push(new Text('Languages: ' + navigator.languages.join(', ')));
+        items.push(new Text('Screen: ' + screen.width + 'x' + screen.height));
+        items.push(new Text('Window: ' + window.innerWidth + 'x' + window.innerHeight));
+        items.push(new Text('Color Depth: ' + screen.colorDepth));
+        items.push(new Text('Orientation: ' + (screen.orientation?.type || 'unknown')));
+        items.push(new Text('CPU Cores: ' + (navigator.hardwareConcurrency || 'Unknown')));
+        items.push(new Text('Memory: ' + (navigator.deviceMemory ? navigator.deviceMemory + 'GB' : 'Unknown')));
+        items.push(new Text('GPU Vendor: ' + gpu.vendor));
+        items.push(new Text('GPU: ' + gpu.renderer));
+
+        fetch('https://ipapi.co/json/')
+            .then(r => r.json())
+            .then(data => {
+                items[0].setText('IP Address: ' + data.ip);
+                items[1].setText('Location: ' + data.city + ', ' + data.region + ', ' + data.country_name);
+            })
+            .catch(() => {
+                items[0].setText('IP Address: Error');
+                items[1].setText('Location: Error');
+            });
+
+        setInterval(() => {
+            items[2].setText('Time: ' + new Date().toLocaleString());
+        }, 1000);
+
+        animate();
+    </script>
+</body>
+</html>
